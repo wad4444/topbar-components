@@ -17,6 +17,7 @@ interface IconProps extends React.PropsWithChildren {
 	Text?: StateDependent<string>;
 	Selected?: () => void;
 	Deselected?: () => void;
+	StateChanged?: (state: IconState) => void;
 }
 
 export type IconState = "Selected" | "Deselected";
@@ -29,6 +30,7 @@ export function Icon({
 	ImageTransparency,
 	Selected,
 	Deselected,
+	StateChanged,
 	BackgroundTransparency,
 	BackgroundColor,
 	Text,
@@ -61,6 +63,7 @@ export function Icon({
 	};
 
 	useEffect(() => {
+		StateChanged?.(currentState);
 		if (currentState === "Selected") {
 			location.IconSelected(id);
 			Selected?.();
@@ -168,7 +171,7 @@ export function Icon({
 							Image={currentImage}
 							BackgroundTransparency={1}
 							ImageColor3={resolveStateDependent(
-								stylesheet.ImageColor3,
+								ImageColor ?? stylesheet.ImageColor3,
 								currentState,
 							)}
 							ImageTransparency={resolveStateDependent(
