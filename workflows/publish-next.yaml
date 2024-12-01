@@ -1,0 +1,37 @@
+name: Publish @next to NPM
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - src/**
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v4
+        with:
+          registry-url: https://registry.npmjs.org/
+          node-version: 20
+
+      - name: Install NPM Dependencies
+        uses: bahmutov/npm-install@v1
+
+      - name: Build 🔧
+        run: npm run build-npm
+    
+      - name: Set version to ENV 💻
+        run: echo "VERSION=$(cat package.json | jq -r .version)-dev-$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Set Package Version 🧭
+        run: npm version --no-git-tag-version ${{ env.VERSION }}
+        
+      - name: Publish package on NPM 📦
+        run: npm publish --tag next
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
