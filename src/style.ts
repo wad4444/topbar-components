@@ -27,6 +27,7 @@ export const DefaultStylesheet = {
 			DefaultMaxWidth: 300,
 			DefaultMinWidth: 200,
 			DefaultMaxHeight: 200,
+			IconCornerRadius: new UDim(0.25, 0),
 		},
 	},
 	New: {
@@ -41,7 +42,7 @@ export const DefaultStylesheet = {
 				Deselected: Color3.fromRGB(0, 0, 0),
 				Selected: Color3.fromRGB(245, 245, 245),
 			},
-			BackgroundTransparency: 0.3,
+			BackgroundTransparency: 0.2,
 			ImageColor3: {
 				Deselected: Color3.fromRGB(255, 255, 255),
 				Selected: Color3.fromRGB(57, 60, 65),
@@ -52,6 +53,7 @@ export const DefaultStylesheet = {
 			DefaultMaxWidth: 300,
 			DefaultMinWidth: 200,
 			DefaultMaxHeight: 200,
+			IconCornerRadius: new UDim(0.4, 0),
 		},
 	},
 } as const;

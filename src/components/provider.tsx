@@ -29,7 +29,7 @@ export function TopbarProvider({
 	if (hasBetaLabel && style === "New") {
 		leftPadding += BETA_LABEL_SIZE_X;
 	} else if (!hasBetaLabel && style === "Old") {
-		leftPadding -= BETA_LABEL_SIZE_X
+		leftPadding -= BETA_LABEL_SIZE_X;
 	}
 
 	return (
@@ -59,9 +59,15 @@ export function TopbarProvider({
 				Position={UDim2.fromScale(1, 0)}
 			>
 				<uipadding
+					key={"UIPadding"}
 					PaddingLeft={new UDim(0, leftPadding)}
 					PaddingRight={new UDim(0, 12)}
-					PaddingTop={new UDim(0, style === "New" ? 10 : 4)}
+					PaddingTop={new UDim(0, style === "New" ? 11 : 4)}
+				/>
+				<uilistlayout
+					key={"UIListLayout"}
+					FillDirection={Enum.FillDirection.Horizontal}
+					Padding={new UDim(0, 12)}
 				/>
 				{children}
 			</frame>

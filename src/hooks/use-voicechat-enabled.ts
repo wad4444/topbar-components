@@ -11,5 +11,5 @@ export function useVoicechatEnabled() {
 		);
 	}, []);
 
-    return enabled;
+	return enabled;
 }

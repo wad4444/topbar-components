@@ -21,7 +21,10 @@ export function useAnimateableProps(props: AnimateableProps): Result {
 		if (
 			props.BackgroundTransparency !== previousProps?.BackgroundTransparency
 		) {
-			transparencyMotion.spring(props.BackgroundTransparency, springs.responsive);
+			transparencyMotion.spring(
+				props.BackgroundTransparency,
+				springs.responsive,
+			);
 		}
 		if (props.BackgroundColor3 !== previousProps?.BackgroundColor3) {
 			colorMotion.spring(props.BackgroundColor3, springs.responsive);

@@ -42,17 +42,17 @@ export function Icon({
 	const id = useId();
 	const [currentState, setState] = useState<IconState>("Deselected");
 	const [dropdownSize, setDropdownSize] = useState(new Vector2(0, 0));
-	const stylesheet = useStylesheet()[style].Icon;
+	const stylesheet = useStylesheet()[style];
 
 	assert(location.Type !== "Icon", "Icons cannot be nested");
 
 	const propsGoal = {
 		BackgroundTransparency: resolveStateDependent(
-			BackgroundTransparency ?? stylesheet.BackgroundTransparency,
+			BackgroundTransparency ?? stylesheet.Icon.BackgroundTransparency,
 			currentState,
 		),
 		BackgroundColor3: resolveStateDependent(
-			BackgroundColor ?? stylesheet.BackgroundColor3,
+			BackgroundColor ?? stylesheet.Icon.BackgroundColor3,
 			currentState,
 		),
 	};
@@ -89,8 +89,8 @@ export function Icon({
 	const TEXT_SIZE = currentText
 		? TextService.GetTextSize(
 				currentText,
-				stylesheet.TextSize,
-				stylesheet.Font,
+				stylesheet.Icon.TextSize,
+				stylesheet.Icon.Font,
 				Vector2.one.mul(99_999),
 			)
 		: Vector2.zero;
@@ -171,7 +171,7 @@ export function Icon({
 							Image={currentImage}
 							BackgroundTransparency={1}
 							ImageColor3={resolveStateDependent(
-								ImageColor ?? stylesheet.ImageColor3,
+								ImageColor ?? stylesheet.Icon.ImageColor3,
 								currentState,
 							)}
 							ImageTransparency={resolveStateDependent(
@@ -182,10 +182,10 @@ export function Icon({
 					)}
 					{currentText !== undefined && currentText !== "" && (
 						<textlabel
-							Font={stylesheet.Font}
-							TextSize={stylesheet.TextSize}
+							Font={stylesheet.Icon.Font}
+							TextSize={stylesheet.Icon.TextSize}
 							TextColor3={resolveStateDependent(
-								stylesheet.TextColor3,
+								stylesheet.Icon.TextColor3,
 								currentState,
 							)}
 							TextWrapped={false}
@@ -206,7 +206,14 @@ export function Icon({
 							key={"IconText"}
 						/>
 					)}
-					<uicorner key={"UICorner"} CornerRadius={stylesheet.CornerRadius} />
+					<uicorner
+						key={"UICorner"}
+						CornerRadius={
+							location.Type === "Dropdown"
+								? stylesheet.Dropdown.IconCornerRadius
+								: stylesheet.Icon.CornerRadius
+						}
+					/>
 				</textbutton>
 			</frame>
 		</LocationContext.Provider>
