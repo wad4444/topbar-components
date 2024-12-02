@@ -20,6 +20,7 @@ export const DefaultStylesheet = {
 				Selected: Color3.fromRGB(57, 60, 65),
 			},
 			TextSize: 20,
+			ImageSizeRatio: 1,
 		},
 		Dropdown: {
 			DefaultMaxWidth: 300,
@@ -46,6 +47,7 @@ export const DefaultStylesheet = {
 				Selected: Color3.fromRGB(57, 60, 65),
 			},
 			TextSize: 20,
+			ImageSizeRatio: 0.8,
 		},
 		Dropdown: {
 			DefaultMaxWidth: 300,

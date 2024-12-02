@@ -1,12 +1,10 @@
 import {
 	mapBinding,
-	useDeferEffect,
-	useDeferState,
 	useMountEffect,
 	useUnmountEffect,
 	useUpdateEffect,
 } from "@rbxts/pretty-react-hooks";
-import React, { useEffect, useLayoutEffect, useState } from "@rbxts/react";
+import React, { useEffect, useState } from "@rbxts/react";
 import { TextService } from "@rbxts/services";
 import { LocationContext, useLocation, useStylesheet } from "../context";
 import { useAnimateableProps } from "../hooks/use-animateable-props";
@@ -25,6 +23,7 @@ interface IconProps extends React.PropsWithChildren {
 	DefaultState?: IconState;
 	State?: IconState;
 	ToggleStateOnClick?: boolean;
+	ImageSizeRatio: number;
 	Selected?: () => void;
 	Deselected?: () => void;
 	StateChanged?: (state: IconState) => void;
@@ -45,6 +44,7 @@ export function Icon({
 	OnClick,
 	BackgroundTransparency,
 	BackgroundColor,
+	ImageSizeRatio,
 	DefaultState,
 	Text,
 	ToggleStateOnClick = true,
@@ -108,7 +108,9 @@ export function Icon({
 
 	const PADDING = style === "New" ? 6 : 3;
 	const ICON_DIFF_Y = style === "New" ? 12 : 4;
-	const IMAGE_SIZE = inset.Height - ICON_DIFF_Y - PADDING * 2;
+	const IMAGE_SIZE =
+		(inset.Height - ICON_DIFF_Y - PADDING * 2) *
+		math.clamp(ImageSizeRatio ?? stylesheet.Icon.ImageSizeRatio, 0, 1);
 
 	const TEXT_SIZE = currentText
 		? TextService.GetTextSize(
@@ -182,7 +184,7 @@ export function Icon({
 							if (ToggleStateOnClick) {
 								setState(
 									currentState === "Deselected" ? "Selected" : "Deselected",
-								)
+								);
 							}
 							OnClick?.();
 						},
