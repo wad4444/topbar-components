@@ -53,7 +53,7 @@ export function Icon({
 	const inset = useGuiInset();
 	const location = useLocation();
 	const id = useId();
-	const [currentState, setState] = useState<IconState>("Deselected");
+	const [currentState, setState] = useState<IconState>(State ?? "Deselected");
 	const [dropdownSize, setDropdownSize] = useState(new Vector2(0, 0));
 	const stylesheet = useStylesheet()[style];
 
@@ -76,14 +76,7 @@ export function Icon({
 	};
 
 	useMountEffect(() => {
-		DefaultState && setState(DefaultState);
-		if (DefaultState === "Selected") {
-			location.IconSelected(id);
-			Selected?.();
-		} else {
-			location.IconDeselected(id);
-			Deselected?.();
-		}
+		DefaultState && !State && setState(DefaultState);
 	});
 
 	useEffect(() => {
