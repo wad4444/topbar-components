@@ -23,7 +23,7 @@ interface IconProps extends React.PropsWithChildren {
 	DefaultState?: IconState;
 	State?: IconState;
 	ToggleStateOnClick?: boolean;
-	ImageSizeRatio: number;
+	ImageSizeRatio?: number;
 	Selected?: () => void;
 	Deselected?: () => void;
 	StateChanged?: (state: IconState) => void;
