@@ -1,6 +1,6 @@
 {
 	"name": "@rbxts/topbar-components",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"main": "out/init.lua",
 	"scripts": {
 		"build": "rbxtsc",
@@ -12,7 +12,10 @@
 	"license": "ISC",
 	"description": "",
 	"types": "out/index.d.ts",
-	"files": ["out", "!**/*.tsbuildinfo"],
+	"files": [
+		"out",
+		"!**/*.tsbuildinfo"
+	],
 	"publishConfig": {
 		"access": "public"
 	},
@@ -25,9 +28,11 @@
 	},
 	"dependencies": {
 		"@rbxts/pretty-react-hooks": "^0.6.1",
-		"@rbxts/react": "^0.4.0",
 		"@rbxts/ripple": "^0.9.1",
 		"@rbxts/services": "^1.5.5",
 		"@rbxts/t": "^3.1.1"
+	},
+	"peerDependencies": {
+		"@rbxts/react": "^17.2.2"
 	}
 }
