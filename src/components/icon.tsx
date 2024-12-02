@@ -15,6 +15,7 @@ interface IconProps extends React.PropsWithChildren {
 	ImageColor?: StateDependent<Color3>;
 	ImageTransparency?: StateDependent<number>;
 	Text?: StateDependent<string>;
+	DefaultState?: IconState;
 	Selected?: () => void;
 	Deselected?: () => void;
 	StateChanged?: (state: IconState) => void;
@@ -33,6 +34,7 @@ export function Icon({
 	StateChanged,
 	BackgroundTransparency,
 	BackgroundColor,
+	DefaultState,
 	Text,
 	children,
 }: IconProps) {
@@ -40,7 +42,7 @@ export function Icon({
 	const inset = useGuiInset();
 	const location = useLocation();
 	const id = useId();
-	const [currentState, setState] = useState<IconState>("Deselected");
+	const [currentState, setState] = useState<IconState>(DefaultState ?? "Deselected");
 	const [dropdownSize, setDropdownSize] = useState(new Vector2(0, 0));
 	const stylesheet = useStylesheet()[style];
 
