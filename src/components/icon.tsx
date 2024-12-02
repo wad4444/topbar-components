@@ -54,7 +54,7 @@ export function Icon({
 
 	const propsGoal = {
 		BackgroundTransparency: resolveStateDependent(
-			BackgroundTransparency ?? stylesheet.Icon.BackgroundTransparency,
+			BackgroundTransparency ?? stylesheet.Icon.BackgroundTransparency, 
 			currentState,
 		),
 		BackgroundColor3: resolveStateDependent(
@@ -83,7 +83,7 @@ export function Icon({
 		if (currentState === "Selected" && !location.SelectedIcons.includes(id)) {
 			setState("Deselected");
 		}
-	}, [location]);
+	}, [location.SelectedIcons]);
 
 	useMountEffect(() => {
 		DefaultState && setState(DefaultState);
