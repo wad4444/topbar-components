@@ -68,6 +68,14 @@ export function Icon({
 		...useAnimateableProps(propsGoal),
 	};
 
+	useMountEffect(() => {
+		DefaultState && setState(DefaultState);
+		if (DefaultState === "Selected") {
+			location.IconSelected(id);
+			Selected?.();
+		}
+	});
+
 	useEffect(() => {
 		StateChanged?.(currentState);
 		if (currentState === "Selected") {
@@ -84,10 +92,6 @@ export function Icon({
 			setState("Deselected");
 		}
 	}, [location.SelectedIcons]);
-
-	useMountEffect(() => {
-		DefaultState && setState(DefaultState);
-	});
 
 	const currentImage = resolveStateDependent(ImageId, currentState);
 	const currentText = resolveStateDependent(Text, currentState);
