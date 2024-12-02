@@ -1,5 +1,3 @@
-import { DeepWritable } from "./utilities/types";
-
 export const DefaultStylesheet = {
 	Old: {
 		Icon: {
@@ -56,6 +54,6 @@ export const DefaultStylesheet = {
 			IconCornerRadius: new UDim(0.4, 0),
 		},
 	},
-} as const;
+};
 
-export type Stylesheet = DeepWritable<typeof DefaultStylesheet>;
+export type Stylesheet = typeof DefaultStylesheet;
