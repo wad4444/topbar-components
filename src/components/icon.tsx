@@ -1,11 +1,12 @@
 import {
 	mapBinding,
 	useDeferEffect,
+	useDeferState,
 	useMountEffect,
 	useUnmountEffect,
 	useUpdateEffect,
 } from "@rbxts/pretty-react-hooks";
-import React, { useEffect, useState } from "@rbxts/react";
+import React, { useEffect, useLayoutEffect, useState } from "@rbxts/react";
 import { TextService } from "@rbxts/services";
 import { LocationContext, useLocation, useStylesheet } from "../context";
 import { useAnimateableProps } from "../hooks/use-animateable-props";
@@ -96,7 +97,7 @@ export function Icon({
 		}
 	}, [currentState]);
 
-	useDeferEffect(() => {
+	useUpdateEffect(() => {
 		if (currentState === "Selected" && !location.SelectedIcons.includes(id)) {
 			setState("Deselected");
 		}
