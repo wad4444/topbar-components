@@ -1,5 +1,6 @@
 import {
 	mapBinding,
+	useDeferEffect,
 	useMountEffect,
 	useUnmountEffect,
 	useUpdateEffect,
@@ -95,7 +96,7 @@ export function Icon({
 		}
 	}, [currentState]);
 
-	useEffect(() => {
+	useDeferEffect(() => {
 		if (currentState === "Selected" && !location.SelectedIcons.includes(id)) {
 			setState("Deselected");
 		}
