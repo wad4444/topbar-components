@@ -1,4 +1,5 @@
 import {
+	lerp,
 	mapBinding,
 	useMountEffect,
 	useUnmountEffect,
@@ -106,11 +107,16 @@ export function Icon({
 	const currentImage = resolveStateDependent(ImageId, currentState);
 	const currentText = resolveStateDependent(Text, currentState);
 
-	const PADDING = style === "New" ? 6 : 3;
+	const sizeRatio = math.clamp(
+		ImageSizeRatio ?? stylesheet.Icon.ImageSizeRatio,
+		0,
+		1,
+	);
+
 	const ICON_DIFF_Y = style === "New" ? 12 : 4;
-	const IMAGE_SIZE =
-		(inset.Height - ICON_DIFF_Y - PADDING * 2) *
-		math.clamp(ImageSizeRatio ?? stylesheet.Icon.ImageSizeRatio, 0, 1);
+	const ICON_HEIGHT = inset.Height - ICON_DIFF_Y
+	const PADDING = lerp(style === "New" ? 6 : 3, ICON_HEIGHT * 0.5, 1 - sizeRatio);
+	const IMAGE_SIZE = ICON_HEIGHT - PADDING * 2;
 
 	const TEXT_SIZE = currentText
 		? TextService.GetTextSize(
@@ -128,7 +134,7 @@ export function Icon({
 				PADDING * 2 +
 				(currentImage && TEXT_SIZE.X !== 0 ? IMAGE_SIZE + PADDING : 0),
 		),
-		inset.Height - ICON_DIFF_Y,
+		ICON_HEIGHT,
 	);
 
 	const textLabelPos = new UDim2(
