@@ -1,4 +1,8 @@
-import { mapBinding, useUnmountEffect } from "@rbxts/pretty-react-hooks";
+import {
+	mapBinding,
+	useMountEffect,
+	useUnmountEffect,
+} from "@rbxts/pretty-react-hooks";
 import React, { useEffect, useState } from "@rbxts/react";
 import { TextService } from "@rbxts/services";
 import { LocationContext, useLocation, useStylesheet } from "../context";
@@ -42,7 +46,7 @@ export function Icon({
 	const inset = useGuiInset();
 	const location = useLocation();
 	const id = useId();
-	const [currentState, setState] = useState<IconState>(DefaultState ?? "Deselected");
+	const [currentState, setState] = useState<IconState>("Deselected");
 	const [dropdownSize, setDropdownSize] = useState(new Vector2(0, 0));
 	const stylesheet = useStylesheet()[style];
 
@@ -80,6 +84,10 @@ export function Icon({
 			setState("Deselected");
 		}
 	}, [location]);
+
+	useMountEffect(() => {
+		DefaultState && setState(DefaultState);
+	});
 
 	const currentImage = resolveStateDependent(ImageId, currentState);
 	const currentText = resolveStateDependent(Text, currentState);
