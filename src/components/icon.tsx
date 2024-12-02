@@ -2,6 +2,7 @@ import {
 	mapBinding,
 	useMountEffect,
 	useUnmountEffect,
+	useUpdateEffect,
 } from "@rbxts/pretty-react-hooks";
 import React, { useEffect, useState } from "@rbxts/react";
 import { TextService } from "@rbxts/services";
@@ -54,7 +55,7 @@ export function Icon({
 
 	const propsGoal = {
 		BackgroundTransparency: resolveStateDependent(
-			BackgroundTransparency ?? stylesheet.Icon.BackgroundTransparency, 
+			BackgroundTransparency ?? stylesheet.Icon.BackgroundTransparency,
 			currentState,
 		),
 		BackgroundColor3: resolveStateDependent(
@@ -73,10 +74,13 @@ export function Icon({
 		if (DefaultState === "Selected") {
 			location.IconSelected(id);
 			Selected?.();
+		} else {
+			location.IconDeselected(id);
+			Deselected?.();
 		}
 	});
 
-	useEffect(() => {
+	useUpdateEffect(() => {
 		StateChanged?.(currentState);
 		if (currentState === "Selected") {
 			location.IconSelected(id);
