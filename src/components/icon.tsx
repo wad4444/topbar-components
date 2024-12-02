@@ -21,9 +21,12 @@ interface IconProps extends React.PropsWithChildren {
 	ImageTransparency?: StateDependent<number>;
 	Text?: StateDependent<string>;
 	DefaultState?: IconState;
+	State?: IconState;
+	ToggleStateOnClick?: boolean;
 	Selected?: () => void;
 	Deselected?: () => void;
 	StateChanged?: (state: IconState) => void;
+	OnClick?: () => void;
 }
 
 export type IconState = "Selected" | "Deselected";
@@ -37,10 +40,13 @@ export function Icon({
 	Selected,
 	Deselected,
 	StateChanged,
+	OnClick,
 	BackgroundTransparency,
 	BackgroundColor,
 	DefaultState,
 	Text,
+	ToggleStateOnClick = true,
+	State,
 	children,
 }: IconProps) {
 	const style = useTopbarStyle();
@@ -79,6 +85,11 @@ export function Icon({
 			Deselected?.();
 		}
 	});
+
+	useEffect(() => {
+		if (!State) return;
+		setState(State);
+	}, [State]);
 
 	useUpdateEffect(() => {
 		StateChanged?.(currentState);
@@ -172,10 +183,14 @@ export function Icon({
 					{...props}
 					Size={new UDim2(1, 0, 0, ICON_SIZE.Y)}
 					Event={{
-						MouseButton1Click: () =>
-							setState(
-								currentState === "Deselected" ? "Selected" : "Deselected",
-							),
+						MouseButton1Click: () => {
+							if (ToggleStateOnClick) {
+								setState(
+									currentState === "Deselected" ? "Selected" : "Deselected",
+								)
+							}
+							OnClick?.();
+						},
 					}}
 					Text={""}
 					key={"IconButton"}
