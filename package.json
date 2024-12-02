@@ -1,6 +1,6 @@
 {
 	"name": "@rbxts/topbar-components",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"main": "out/init.lua",
 	"scripts": {
 		"build": "rbxtsc",
