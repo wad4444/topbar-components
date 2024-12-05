@@ -1,6 +1,6 @@
 import {
-	lerp,
 	mapBinding,
+	useAsyncEffect,
 	useMountEffect,
 	useUnmountEffect,
 	useUpdateEffect,
@@ -56,6 +56,7 @@ export function Icon({
 	const id = useId();
 	const [currentState, setState] = useState<IconState>(State ?? "Deselected");
 	const [dropdownSize, setDropdownSize] = useState(new Vector2(0, 0));
+	const [textBounds, setTextBounds] = useState(Vector2.zero);
 	const stylesheet = useStylesheet()[style];
 
 	assert(location.Type !== "Icon", "Icons cannot be nested");
@@ -105,26 +106,29 @@ export function Icon({
 	const currentImage = resolveStateDependent(ImageId, currentState);
 	const currentText = resolveStateDependent(Text, currentState);
 
-	const ICON_DIFF_Y = style === "New" ? 12 : 4;
-	const ICON_HEIGHT = inset.Height - ICON_DIFF_Y
-	const PADDING = style === "New" ? 6 : 3
-	const IMAGE_SIZE = ICON_HEIGHT - PADDING * 2;
+	useAsyncEffect(async () => {
+		if (!currentText) return;
 
-	const TEXT_SIZE = currentText
-		? TextService.GetTextSize(
-				currentText,
-				stylesheet.Icon.TextSize,
-				stylesheet.Icon.Font,
-				Vector2.one.mul(99_999),
-			)
-		: Vector2.zero;
+		const params = new Instance("GetTextBoundsParams");
+		params.Text = currentText;
+		params.Font = stylesheet.Icon.FontFace;
+		params.Size = stylesheet.Icon.TextSize;
+		params.Width = 99999;
+
+		setTextBounds(TextService.GetTextBoundsAsync(params));
+	}, [currentText, stylesheet]);
+
+	const ICON_DIFF_Y = style === "New" ? 12 : 4;
+	const ICON_HEIGHT = inset.Height - ICON_DIFF_Y;
+	const PADDING = style === "New" ? 6 : 3;
+	const IMAGE_SIZE = ICON_HEIGHT - PADDING * 2;
 
 	const ICON_SIZE = new Vector2(
 		math.max(
 			inset.Height,
-			TEXT_SIZE.X +
+			textBounds.X +
 				PADDING * 2 +
-				(currentImage && TEXT_SIZE.X !== 0 ? IMAGE_SIZE + PADDING : 0),
+				(currentImage && textBounds.X !== 0 ? IMAGE_SIZE + PADDING : 0),
 		),
 		ICON_HEIGHT,
 	);
@@ -210,7 +214,7 @@ export function Icon({
 					)}
 					{currentText !== undefined && currentText !== "" && (
 						<textlabel
-							Font={stylesheet.Icon.Font}
+							FontFace={stylesheet.Icon.FontFace}
 							TextSize={stylesheet.Icon.TextSize}
 							TextColor3={resolveStateDependent(
 								stylesheet.Icon.TextColor3,
@@ -222,8 +226,8 @@ export function Icon({
 								new UDim2(
 									0,
 									currentImage
-										? TEXT_SIZE.X
-										: math.max(TEXT_SIZE.X, inset.Height - PADDING * 2),
+										? textBounds.X
+										: math.max(textBounds.X, inset.Height - PADDING * 2),
 									0.8,
 									0,
 								)

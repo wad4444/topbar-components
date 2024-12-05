@@ -36,7 +36,7 @@ export function Dropdown({
 		? location.Width
 		: (MinWidth ?? stylesheet.DefaultMinWidth);
 	const maxHeight = MaxHeight ?? stylesheet.DefaultMaxHeight;
-	const SCROLL_WIDTH = 12;
+	const SCROLL_WIDTH = 5;
 
 	const contentSize = useMemo(() => {
 		let y = 0;
