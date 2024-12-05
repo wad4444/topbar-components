@@ -24,7 +24,6 @@ interface IconProps extends React.PropsWithChildren {
 	DefaultState?: IconState;
 	State?: IconState;
 	ToggleStateOnClick?: boolean;
-	ImageSizeRatio?: number;
 	Selected?: () => void;
 	Deselected?: () => void;
 	StateChanged?: (state: IconState) => void;
@@ -45,7 +44,6 @@ export function Icon({
 	OnClick,
 	BackgroundTransparency,
 	BackgroundColor,
-	ImageSizeRatio,
 	DefaultState,
 	Text,
 	ToggleStateOnClick = true,
@@ -107,15 +105,9 @@ export function Icon({
 	const currentImage = resolveStateDependent(ImageId, currentState);
 	const currentText = resolveStateDependent(Text, currentState);
 
-	const sizeRatio = math.clamp(
-		ImageSizeRatio ?? stylesheet.Icon.ImageSizeRatio,
-		0,
-		1,
-	);
-
 	const ICON_DIFF_Y = style === "New" ? 12 : 4;
 	const ICON_HEIGHT = inset.Height - ICON_DIFF_Y
-	const PADDING = lerp(style === "New" ? 6 : 3, ICON_HEIGHT * 0.5, 1 - sizeRatio);
+	const PADDING = style === "New" ? 6 : 3
 	const IMAGE_SIZE = ICON_HEIGHT - PADDING * 2;
 
 	const TEXT_SIZE = currentText
