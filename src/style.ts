@@ -1,7 +1,7 @@
 export const DefaultStylesheet = {
 	Old: {
 		Icon: {
-			Font: Enum.Font.GothamSemibold as Enum.Font,
+			FontFace: new Font("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Medium, Enum.FontStyle.Normal),
 			CornerRadius: new UDim(0.25, 0),
 			TextColor3: {
 				Deselected: Color3.fromRGB(255, 255, 255),
@@ -25,12 +25,12 @@ export const DefaultStylesheet = {
 			DefaultMaxWidth: 300,
 			DefaultMinWidth: 200,
 			DefaultMaxHeight: 200,
-			IconCornerRadius: new UDim(0.25, 0),
+			IconCornerRadius: new UDim(0, 0),
 		},
 	},
 	New: {
 		Icon: {
-			Font: Enum.Font.GothamSemibold as Enum.Font,
+			FontFace: new Font("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Medium, Enum.FontStyle.Normal),
 			CornerRadius: new UDim(1, 0),
 			TextColor3: {
 				Deselected: Color3.fromRGB(255, 255, 255),
