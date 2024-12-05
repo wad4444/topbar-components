@@ -107,7 +107,7 @@ export function Icon({
 	const currentText = resolveStateDependent(Text, currentState);
 
 	useAsyncEffect(async () => {
-		if (!currentText) return;
+		if (!currentText) return setTextBounds(Vector2.zero);
 
 		const params = new Instance("GetTextBoundsParams");
 		params.Text = currentText;
@@ -125,7 +125,7 @@ export function Icon({
 
 	const ICON_SIZE = new Vector2(
 		math.max(
-			inset.Height,
+			ICON_HEIGHT,
 			textBounds.X +
 				PADDING * 2 +
 				(currentImage && textBounds.X !== 0 ? IMAGE_SIZE + PADDING : 0),

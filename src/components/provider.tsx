@@ -29,7 +29,7 @@ export function TopbarProvider({
 	if (hasBetaLabel && style === "New") {
 		leftPadding += BETA_LABEL_SIZE_X;
 	} else if (!hasBetaLabel && style === "Old") {
-		leftPadding -= BETA_LABEL_SIZE_X * 2;
+		leftPadding -= BETA_LABEL_SIZE_X * 2 + 2;
 	}
 
 	return (
