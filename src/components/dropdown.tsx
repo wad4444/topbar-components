@@ -106,7 +106,7 @@ export function Dropdown({
 				key={"Dropdown"}
 			>
 				{children}
-				<uilistlayout key={"UIListLayout"} />
+				<uilistlayout key={"UIListLayout"} Padding={stylesheet.Padding} />
 			</scrollingframe>
 		</LocationContext.Provider>
 	);
