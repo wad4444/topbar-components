@@ -54,6 +54,8 @@ export function Dropdown({
 	}, [location.IsVisible]);
 
 	const scrollingEnabled = contentSize.Y > maxHeight;
+	const paddingSummarized = stylesheet.Padding.Offset * (contents.size() - 1);
+
 	return (
 		<LocationContext.Provider
 			value={{
@@ -87,7 +89,7 @@ export function Dropdown({
 				Size={mapBinding(transition, (t) =>
 					UDim2.fromOffset(
 						contentSize.X + (scrollingEnabled ? SCROLL_WIDTH : 0),
-						t * math.min(contentSize.Y, maxHeight),
+						t * math.min(contentSize.Y + paddingSummarized, maxHeight),
 					),
 				)}
 				BorderSizePixel={0}
