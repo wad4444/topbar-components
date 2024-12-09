@@ -119,7 +119,8 @@ export function Icon({
 	}, [currentText, stylesheet]);
 
 	const ICON_DIFF_Y = style === "New" ? 12 : 4;
-	const FORCE_HEIGHT = location.Type === "Dropdown" ? stylesheet.Dropdown.ForceHeight : undefined;
+	const FORCE_HEIGHT =
+		location.Type === "Dropdown" ? stylesheet.Dropdown.ForceHeight : undefined;
 	const ICON_HEIGHT = FORCE_HEIGHT ?? inset.Height - ICON_DIFF_Y;
 	const PADDING = style === "New" ? 6 : 3;
 	const IMAGE_SIZE = ICON_HEIGHT - PADDING * 2;

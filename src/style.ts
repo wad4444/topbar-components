@@ -23,7 +23,7 @@ export const DefaultStylesheet = {
 				Deselected: Color3.fromRGB(255, 255, 255),
 				Selected: Color3.fromRGB(57, 60, 65),
 			},
-			TextSize: 20,
+			TextSize: 17,
 		},
 		Dropdown: {
 			DefaultMaxWidth: 300,
@@ -63,7 +63,7 @@ export const DefaultStylesheet = {
 			DefaultMaxHeight: 200,
 			Padding: new UDim(0, 2.5),
 			ForceHeight: 32,
-			IconCornerRadius: new UDim(0.4, 0),
+			IconCornerRadius: new UDim(0, 0),
 		},
 	},
 };
