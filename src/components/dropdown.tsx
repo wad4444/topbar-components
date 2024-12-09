@@ -43,18 +43,18 @@ export function Dropdown({
 		let x = minWidth;
 		for (const [_, size] of contents) {
 			x = math.min(maxWidth, math.max(x, size.X));
-			y += size.Y;
+			y += size.Y + stylesheet.Padding.Offset;
 		}
 
+		y -= stylesheet.Padding.Offset;
 		return new Vector2(x, y);
-	}, [contents, maxWidth, minWidth]);
+	}, [contents, maxWidth, minWidth, stylesheet.Padding.Offset]);
 
 	useEffect(() => {
 		transitionMotion.linear(location.IsVisible ? 1 : 0, { speed: 10 });
 	}, [location.IsVisible]);
 
 	const scrollingEnabled = contentSize.Y > maxHeight;
-	const paddingSummarized = stylesheet.Padding.Offset * (contents.size() - 1);
 
 	return (
 		<LocationContext.Provider
@@ -89,11 +89,7 @@ export function Dropdown({
 				Size={mapBinding(transition, (t) =>
 					UDim2.fromOffset(
 						contentSize.X + (scrollingEnabled ? SCROLL_WIDTH : 0),
-						t *
-							math.min(
-								contentSize.Y + paddingSummarized,
-								maxHeight + paddingSummarized,
-							),
+						t * math.min(contentSize.Y, maxHeight),
 					),
 				)}
 				BorderSizePixel={0}
