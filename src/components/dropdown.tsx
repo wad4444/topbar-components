@@ -89,7 +89,11 @@ export function Dropdown({
 				Size={mapBinding(transition, (t) =>
 					UDim2.fromOffset(
 						contentSize.X + (scrollingEnabled ? SCROLL_WIDTH : 0),
-						t * math.min(contentSize.Y + paddingSummarized, maxHeight),
+						t *
+							math.min(
+								contentSize.Y + paddingSummarized,
+								maxHeight + paddingSummarized,
+							),
 					),
 				)}
 				BorderSizePixel={0}
