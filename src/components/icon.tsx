@@ -20,6 +20,7 @@ interface IconProps extends React.PropsWithChildren {
 	ImageId?: StateDependent<string>;
 	ImageColor?: StateDependent<Color3>;
 	ImageTransparency?: StateDependent<number>;
+	LayoutOrder?: StateDependent<number>;
 	Text?: StateDependent<string>;
 	DefaultState?: IconState;
 	State?: IconState;
@@ -45,6 +46,7 @@ export function Icon({
 	BackgroundTransparency,
 	BackgroundColor,
 	DefaultState,
+	LayoutOrder,
 	Text,
 	ToggleStateOnClick = true,
 	State,
@@ -177,6 +179,7 @@ export function Icon({
 		>
 			<frame
 				Size={mapBinding(wrapSize, (t) => UDim2.fromOffset(t.X, t.Y))}
+				LayoutOrder={resolveStateDependent(LayoutOrder, currentState)}
 				BackgroundTransparency={1}
 				key={"IconWrapper"}
 			>

@@ -108,7 +108,11 @@ export function Dropdown({
 				key={"Dropdown"}
 			>
 				{children}
-				<uilistlayout key={"UIListLayout"} Padding={stylesheet.Padding} />
+				<uilistlayout
+					key={"UIListLayout"}
+					SortOrder={Enum.SortOrder.LayoutOrder}
+					Padding={stylesheet.Padding}
+				/>
 			</scrollingframe>
 		</LocationContext.Provider>
 	);

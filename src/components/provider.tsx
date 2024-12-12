@@ -67,6 +67,7 @@ export function TopbarProvider({
 				<uilistlayout
 					key={"UIListLayout"}
 					FillDirection={Enum.FillDirection.Horizontal}
+					SortOrder={Enum.SortOrder.LayoutOrder}
 					Padding={new UDim(0, 12)}
 				/>
 				{children}
