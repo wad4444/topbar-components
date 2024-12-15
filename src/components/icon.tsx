@@ -19,6 +19,7 @@ interface IconProps extends React.PropsWithChildren {
 	BackgroundColor?: StateDependent<Color3>;
 	ImageId?: StateDependent<string>;
 	ImageColor?: StateDependent<Color3>;
+	TextColor?: StateDependent<Color3>;
 	ImageTransparency?: StateDependent<number>;
 	LayoutOrder?: StateDependent<number>;
 	Text?: StateDependent<string>;
@@ -38,6 +39,7 @@ export type IconId = number;
 export function Icon({
 	ImageId,
 	ImageColor,
+	TextColor,
 	ImageTransparency,
 	Selected,
 	Deselected,
@@ -222,7 +224,7 @@ export function Icon({
 							FontFace={stylesheet.Icon.FontFace}
 							TextSize={stylesheet.Icon.TextSize}
 							TextColor3={resolveStateDependent(
-								stylesheet.Icon.TextColor3,
+								TextColor ?? stylesheet.Icon.TextColor3,
 								currentState,
 							)}
 							TextWrapped={false}
