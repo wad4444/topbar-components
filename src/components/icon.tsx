@@ -30,6 +30,7 @@ interface IconProps extends React.PropsWithChildren {
 	Deselected?: () => void;
 	StateChanged?: (state: IconState) => void;
 	OnClick?: () => void;
+	OnRightClick?: () => void;
 }
 
 export type IconState = "Selected" | "Deselected";
@@ -45,6 +46,7 @@ export function Icon({
 	Deselected,
 	StateChanged,
 	OnClick,
+	OnRightClick,
 	BackgroundTransparency,
 	BackgroundColor,
 	DefaultState,
@@ -199,6 +201,7 @@ export function Icon({
 							}
 							OnClick?.();
 						},
+						MouseButton2Click: OnRightClick,
 					}}
 					Text={""}
 					key={"IconButton"}
