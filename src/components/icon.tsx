@@ -140,7 +140,6 @@ export function Icon({
 		ICON_HEIGHT,
 	);
 	const IMAGE_POS = PADDING + IMAGE_SIZE_OFF * -0.5;
-	print(PADDING, IMAGE_SIZE_OFF, IMAGE_SIZE, ICON_HEIGHT);
 
 	const textLabelPos = new UDim2(
 		0,
