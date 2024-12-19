@@ -127,8 +127,8 @@ export function Icon({
 		location.Type === "Dropdown" ? stylesheet.Dropdown.ForceHeight : undefined;
 	const ICON_HEIGHT = FORCE_HEIGHT ?? inset.Height - ICON_DIFF_Y;
 	const PADDING = style === "New" ? 6 : 3;
-	const IMAGE_SIZE =
-		ICON_HEIGHT - PADDING * 2 + stylesheet.Icon.ImageSizeOffset;
+	const IMAGE_SIZE_OFF = stylesheet.Icon.ImageSizeOffset;
+	const IMAGE_SIZE = ICON_HEIGHT - PADDING * 2 + IMAGE_SIZE_OFF;
 
 	const ICON_SIZE = new Vector2(
 		math.max(
@@ -207,7 +207,10 @@ export function Icon({
 						<imagelabel
 							key={"IconImage"}
 							Size={UDim2.fromOffset(IMAGE_SIZE, IMAGE_SIZE)}
-							Position={UDim2.fromOffset(PADDING, PADDING)}
+							Position={UDim2.fromOffset(
+								PADDING + IMAGE_SIZE_OFF * 0.5,
+								PADDING + IMAGE_SIZE_OFF * 0.5,
+							)}
 							Image={currentImage}
 							BackgroundTransparency={1}
 							ImageColor3={resolveStateDependent(
