@@ -139,6 +139,8 @@ export function Icon({
 		),
 		ICON_HEIGHT,
 	);
+	const IMAGE_POS =
+		PADDING + (IMAGE_SIZE_OFF > 0 ? -IMAGE_SIZE_OFF : IMAGE_SIZE_OFF) * 0.5;
 
 	const textLabelPos = new UDim2(
 		0,
@@ -207,10 +209,7 @@ export function Icon({
 						<imagelabel
 							key={"IconImage"}
 							Size={UDim2.fromOffset(IMAGE_SIZE, IMAGE_SIZE)}
-							Position={UDim2.fromOffset(
-								PADDING + IMAGE_SIZE_OFF * 0.5,
-								PADDING + IMAGE_SIZE_OFF * 0.5,
-							)}
+							Position={UDim2.fromOffset(IMAGE_POS, IMAGE_POS)}
 							Image={currentImage}
 							BackgroundTransparency={1}
 							ImageColor3={resolveStateDependent(
