@@ -132,6 +132,12 @@ export function Icon({
 	const IMAGE_SIZE_OFF = stylesheet.Icon.ImageSizeOffset;
 	const IMAGE_SIZE = ICON_HEIGHT - PADDING * 2 + IMAGE_SIZE_OFF;
 
+	const MIN_TL_WIDTH =
+		location.Type === "Dropdown" ? 0 : inset.Height - PADDING * 2;
+	const ACCUMULATED_TL_WIDTH = currentImage
+		? textBounds.X
+		: math.max(textBounds.X, MIN_TL_WIDTH);
+
 	const ICON_SIZE = new Vector2(
 		math.max(
 			ICON_HEIGHT,
@@ -234,16 +240,7 @@ export function Icon({
 							)}
 							TextWrapped={false}
 							AnchorPoint={new Vector2(0, 0.5)}
-							Size={
-								new UDim2(
-									0,
-									currentImage
-										? textBounds.X
-										: math.max(textBounds.X, inset.Height - PADDING * 2),
-									0.8,
-									0,
-								)
-							}
+							Size={new UDim2(0, ACCUMULATED_TL_WIDTH, 0.8, 0)}
 							Position={textLabelPos}
 							BackgroundTransparency={1}
 							Text={currentText}
