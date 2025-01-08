@@ -108,6 +108,7 @@ export function Dropdown({
 				key={"Dropdown"}
 			>
 				{children}
+				{isNested && <uipadding PaddingTop={stylesheet.Padding} />}
 				<uilistlayout
 					key={"UIListLayout"}
 					SortOrder={Enum.SortOrder.LayoutOrder}
