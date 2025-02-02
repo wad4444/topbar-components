@@ -46,7 +46,6 @@ export function Dropdown({
 			y += size.Y + stylesheet.Padding.Offset;
 		}
 
-		y -= stylesheet.Padding.Offset;
 		return new Vector2(x, y);
 	}, [contents, maxWidth, minWidth, stylesheet.Padding.Offset]);
 
