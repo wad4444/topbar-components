@@ -6,13 +6,14 @@ import {
 	useUpdateEffect,
 } from "@rbxts/pretty-react-hooks";
 import React, { useEffect, useState } from "@rbxts/react";
-import { TextService } from "@rbxts/services";
+import { SoundService, TextService } from "@rbxts/services";
 import { LocationContext, useLocation, useStylesheet } from "../context";
 import { useAnimateableProps } from "../hooks/use-animateable-props";
 import { useGuiInset } from "../hooks/use-gui-inset";
 import { useId } from "../hooks/use-id";
 import { useTopbarStyle } from "../hooks/use-topbar-style";
 import { resolveStateDependent } from "../utilities/resolve-state-dependent";
+import { Manager } from "@rbxts/melody";
 
 interface IconProps extends React.PropsWithChildren {
 	BackgroundTransparency?: StateDependent<number>;
@@ -25,6 +26,7 @@ interface IconProps extends React.PropsWithChildren {
 	Text?: StateDependent<string>;
 	DefaultState?: IconState;
 	State?: IconState;
+	Sound?: string;
 	ToggleStateOnClick?: boolean;
 	Selected?: () => void;
 	Deselected?: () => void;
@@ -52,6 +54,7 @@ export function Icon({
 	DefaultState,
 	LayoutOrder,
 	Text,
+	Sound,
 	ToggleStateOnClick = true,
 	State,
 	children,
@@ -206,6 +209,11 @@ export function Icon({
 								);
 							}
 							OnClick?.();
+
+							const soundId = Sound ?? stylesheet.Icon.Sound;
+							if (!soundId) return;
+							
+							stylesheet.Icon.PlaySound(soundId);
 						},
 						MouseButton2Click: OnRightClick,
 					}}

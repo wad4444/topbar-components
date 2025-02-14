@@ -1,3 +1,14 @@
+import { Manager } from "@rbxts/melody";
+import { SoundService } from "@rbxts/services";
+
+function DefaultPlaySound(id: string) {
+	const sound = Manager.buildSoundCreator(id)({
+		Parent: SoundService,
+	});
+	sound.Play();
+	sound.Ended.Once(() => sound.Destroy());
+}
+
 export const DefaultStylesheet = {
 	Old: {
 		Icon: {
@@ -25,6 +36,8 @@ export const DefaultStylesheet = {
 			},
 			TextSize: 17,
 			ImageSizeOffset: 0,
+			Sound: "",
+			PlaySound: DefaultPlaySound,
 		},
 		Dropdown: {
 			DefaultMaxWidth: 300,
@@ -58,6 +71,8 @@ export const DefaultStylesheet = {
 			},
 			TextSize: 20,
 			ImageSizeOffset: -4,
+			Sound: "",
+			PlaySound: DefaultPlaySound,
 		},
 		Dropdown: {
 			DefaultMaxWidth: 300,
