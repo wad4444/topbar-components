@@ -6,14 +6,13 @@ import {
 	useUpdateEffect,
 } from "@rbxts/pretty-react-hooks";
 import React, { useEffect, useState } from "@rbxts/react";
-import { SoundService, TextService } from "@rbxts/services";
+import { TextService } from "@rbxts/services";
 import { LocationContext, useLocation, useStylesheet } from "../context";
 import { useAnimateableProps } from "../hooks/use-animateable-props";
 import { useGuiInset } from "../hooks/use-gui-inset";
 import { useId } from "../hooks/use-id";
 import { useTopbarStyle } from "../hooks/use-topbar-style";
 import { resolveStateDependent } from "../utilities/resolve-state-dependent";
-import { Manager } from "@rbxts/melody";
 
 interface IconProps extends React.PropsWithChildren {
 	BackgroundTransparency?: StateDependent<number>;
@@ -212,10 +211,18 @@ export function Icon({
 
 							const soundId = Sound ?? stylesheet.Icon.Sound;
 							if (!soundId) return;
-							
+
 							stylesheet.Icon.PlaySound(soundId);
 						},
-						MouseButton2Click: OnRightClick,
+						MouseButton2Click: () => {
+							if (!OnRightClick) return;
+							OnRightClick();
+
+							const soundId = Sound ?? stylesheet.Icon.Sound;
+							if (!soundId) return;
+
+							stylesheet.Icon.PlaySound(soundId);
+						},
 					}}
 					Text={""}
 					key={"IconButton"}
