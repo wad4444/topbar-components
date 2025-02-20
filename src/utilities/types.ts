@@ -6,6 +6,8 @@ export type DeepPartial<T> = true extends ContainsNominal<keyof T>
 		? T
 		: T extends Map<any, any>
 			? T
-			: T extends object
-				? { [K in keyof T]?: DeepPartial<T[K]> }
-				: T;
+			: T extends (...args: any[]) => any
+				? T
+				: T extends object
+					? { [K in keyof T]?: DeepPartial<T[K]> }
+					: T;
