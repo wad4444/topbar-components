@@ -1,6 +1,6 @@
 {
 	"name": "@rbxts/topbar-components",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"main": "out/init.lua",
 	"scripts": {
 		"build": "rbxtsc",
@@ -8,9 +8,9 @@
 		"prepublishOnly": "npm run build"
 	},
 	"keywords": [],
-	"author": "",
-	"license": "ISC",
-	"description": "",
+	"author": "wad4444",
+	"license": "MIT",
+	"description": "@rbxts/react component package mimicking topbar-plus",
 	"types": "out/index.d.ts",
 	"files": [
 		"out",
@@ -18,6 +18,10 @@
 		"LICENSE.txt",
 		"!**/*.tsbuildinfo"
 	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/wad4444/topbar-components.git"
+	},
 	"publishConfig": {
 		"access": "public"
 	},
