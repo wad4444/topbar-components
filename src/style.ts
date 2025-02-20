@@ -1,5 +1,7 @@
 import { Manager } from "@rbxts/melody";
 import { SoundService } from "@rbxts/services";
+import { IconProps } from "./components/icon";
+import { DropdownProps } from "./components/dropdown";
 
 function DefaultPlaySound(id: string) {
 	const sound = Manager.buildSoundCreator(id)({
@@ -9,80 +11,61 @@ function DefaultPlaySound(id: string) {
 	sound.Ended.Once(() => sound.Destroy());
 }
 
-export const DefaultStylesheet = {
-	Old: {
-		Icon: {
-			FontFace: new Font(
-				"rbxasset://fonts/families/GothamSSm.json",
-				Enum.FontWeight.Medium,
-				Enum.FontStyle.Normal,
-			),
-			CornerRadius: new UDim(0.25, 0),
-			TextColor3: {
-				Deselected: Color3.fromRGB(255, 255, 255),
-				Selected: Color3.fromRGB(57, 60, 65),
-			},
-			BackgroundColor3: {
-				Deselected: Color3.fromRGB(0, 0, 0),
-				Selected: Color3.fromRGB(245, 245, 245),
-			},
-			BackgroundTransparency: {
-				Deselected: 0.5,
-				Selected: 0.1,
-			},
-			ImageColor3: {
-				Deselected: Color3.fromRGB(255, 255, 255),
-				Selected: Color3.fromRGB(57, 60, 65),
-			},
-			TextSize: 17,
-			ImageSizeOffset: 0,
-			Sound: "",
-			PlaySound: DefaultPlaySound,
-		},
-		Dropdown: {
-			DefaultMaxWidth: 300,
-			DefaultMinWidth: 200,
-			DefaultMaxHeight: 200,
-			Padding: new UDim(0, 2.5),
-			ForceHeight: undefined,
-			IconCornerRadius: new UDim(0, 0),
-		},
-	},
-	New: {
-		Icon: {
-			FontFace: new Font(
-				"rbxasset://fonts/families/GothamSSm.json",
-				Enum.FontWeight.Medium,
-				Enum.FontStyle.Normal,
-			),
-			CornerRadius: new UDim(1, 0),
-			TextColor3: {
-				Deselected: Color3.fromRGB(255, 255, 255),
-				Selected: Color3.fromRGB(57, 60, 65),
-			},
-			BackgroundColor3: {
-				Deselected: Color3.fromRGB(0, 0, 0),
-				Selected: Color3.fromRGB(245, 245, 245),
-			},
-			BackgroundTransparency: 0.3,
-			ImageColor3: {
-				Deselected: Color3.fromRGB(255, 255, 255),
-				Selected: Color3.fromRGB(57, 60, 65),
-			},
-			TextSize: 20,
-			ImageSizeOffset: -4,
-			Sound: "",
-			PlaySound: DefaultPlaySound,
-		},
-		Dropdown: {
-			DefaultMaxWidth: 300,
-			DefaultMinWidth: 200,
-			DefaultMaxHeight: 200,
-			Padding: new UDim(0, 2.5),
-			ForceHeight: 32,
-			IconCornerRadius: new UDim(0, 0),
-		},
-	},
-};
+export function Noop() {}
 
-export type Stylesheet = typeof DefaultStylesheet;
+export interface Stylesheet {
+	icon: Required<IconProps>;
+	dropdown: Required<DropdownProps>;
+}
+
+export const DefaultStylesheet: Stylesheet = {
+	icon: {
+		fontFace: new Font(
+			"rbxasset://fonts/families/GothamSSm.json",
+			Enum.FontWeight.Medium,
+			Enum.FontStyle.Normal,
+		),
+		cornerRadius: new UDim(1, 0),
+		textColor: {
+			deselected: Color3.fromRGB(255, 255, 255),
+			selected: Color3.fromRGB(57, 60, 65),
+		},
+		backgroundColor: {
+			deselected: Color3.fromRGB(0, 0, 0),
+			selected: Color3.fromRGB(245, 245, 245),
+		},
+		backgroundTransparency: 0.3,
+		imageColor: {
+			deselected: Color3.fromRGB(255, 255, 255),
+			selected: Color3.fromRGB(57, 60, 65),
+		},
+		textSize: 20,
+		imageSizeOffset: -4,
+		leftClickSound: "",
+		rightClickSound: "",
+		playSound: DefaultPlaySound,
+		imageId: "",
+		imageTransparency: 0,
+		layoutOrder: 0,
+		text: "",
+		defaultState: "deselected",
+		forcedState: "deselected",
+		toggleStateOnClick: true,
+		selected: Noop,
+		deselected: Noop,
+		stateChanged: Noop,
+		onClick: Noop,
+		onRightClick: Noop,
+		children: [],
+	},
+	dropdown: {
+		maxWidth: 300,
+		minWidth: 200,
+		maxHeight: 200,
+		padding: new UDim(0, 2.5),
+		forceHeight: 32,
+		iconCornerRadius: new UDim(0, 0),
+		selectionMode: "Multiple",
+		children: [],
+	}
+};

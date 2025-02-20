@@ -1,50 +1,41 @@
 import React, { useState } from "@rbxts/react";
 import { LocationContext } from "../context";
 import { useGuiInset } from "../hooks/use-gui-inset";
-import { useTopbarStyle } from "../hooks/use-topbar-style";
 import { useVoicechatEnabled } from "../hooks/use-voicechat-enabled";
 import { IconId } from "./icon";
 
 export type SelectionMode = "Single" | "Multiple";
 
 interface ProviderProps extends React.PropsWithChildren {
-	SelectionMode?: SelectionMode;
-	GameVoiceChatEnabled?: boolean;
+	selectionMode?: SelectionMode;
+	gameVoiceChatEnabled?: boolean;
 }
 
 export function TopbarProvider({
-	SelectionMode = "Single",
+	selectionMode = "Single",
+	gameVoiceChatEnabled,
 	children,
-	GameVoiceChatEnabled,
 }: ProviderProps) {
 	const [selectedIcons, setSelectedIcons] = useState<IconId[]>([]);
 	const inset = useGuiInset();
-	const style = useTopbarStyle();
-	const isVCEnabledForUser = useVoicechatEnabled();
+	const voiceChatEnabled = useVoicechatEnabled();
 
-	const hasBetaLabel = GameVoiceChatEnabled && isVCEnabledForUser;
-	const BETA_LABEL_SIZE_X = 16;
-	let leftPadding = style === "New" ? 8 : 0;
-
-	if (hasBetaLabel && style === "New") {
-		leftPadding += BETA_LABEL_SIZE_X;
-	} else if (!hasBetaLabel && style === "Old") {
-		leftPadding -= BETA_LABEL_SIZE_X * 2 + 3;
-	}
+	const hasBetaLabel = gameVoiceChatEnabled && voiceChatEnabled;
+	const leftPadding = hasBetaLabel ? 8 + 16 : 8;
 
 	return (
 		<LocationContext.Provider
 			value={{
-				Type: "Provider",
-				SelectedIcons: selectedIcons,
-				IconSelected: (iconId) => {
-					if (SelectionMode === "Single") {
+				type: "provider",
+				selectedIcons: selectedIcons,
+				iconSelected: (iconId) => {
+					if (selectionMode === "Single") {
 						return setSelectedIcons([iconId]);
 					}
 					return setSelectedIcons((icons) => [...icons, iconId]);
 				},
-				IconDeselected: (iconId) => {
-					if (SelectionMode === "Single" && selectedIcons.includes(iconId)) {
+				iconDeselected: (iconId) => {
+					if (selectionMode === "Single" && selectedIcons.includes(iconId)) {
 						return setSelectedIcons([]);
 					}
 					return setSelectedIcons((icons) => icons.filter((T) => T !== iconId));
@@ -62,7 +53,7 @@ export function TopbarProvider({
 					key={"UIPadding"}
 					PaddingLeft={new UDim(0, leftPadding)}
 					PaddingRight={new UDim(0, 12)}
-					PaddingTop={new UDim(0, style === "New" ? 11 : 4)}
+					PaddingTop={new UDim(0, 11)}
 				/>
 				<uilistlayout
 					key={"UIListLayout"}

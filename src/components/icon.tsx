@@ -1,3 +1,4 @@
+import { deepEquals } from "@rbxts/object-utils";
 import {
 	mapBinding,
 	useAsyncEffect,
@@ -5,257 +6,259 @@ import {
 	useUnmountEffect,
 	useUpdateEffect,
 } from "@rbxts/pretty-react-hooks";
-import React, { useEffect, useState } from "@rbxts/react";
+import React, { useBinding, useEffect, useRef, useState } from "@rbxts/react";
+import { MotionGoal } from "@rbxts/ripple";
 import { TextService } from "@rbxts/services";
 import { LocationContext, useLocation, useStylesheet } from "../context";
 import { useAnimateableProps } from "../hooks/use-animateable-props";
 import { useGuiInset } from "../hooks/use-gui-inset";
 import { useId } from "../hooks/use-id";
-import { useTopbarStyle } from "../hooks/use-topbar-style";
-import { resolveStateDependent } from "../utilities/resolve-state-dependent";
+import { Noop } from "../style";
+import { stateful } from "../utilities/resolve-state-dependent";
 
-interface IconProps extends React.PropsWithChildren {
-	BackgroundTransparency?: StateDependent<number>;
-	BackgroundColor?: StateDependent<Color3>;
-	ImageId?: StateDependent<string>;
-	ImageColor?: StateDependent<Color3>;
-	TextColor?: StateDependent<Color3>;
-	ImageTransparency?: StateDependent<number>;
-	LayoutOrder?: StateDependent<number>;
-	Text?: StateDependent<string>;
-	DefaultState?: IconState;
-	State?: IconState;
-	Sound?: string;
-	ToggleStateOnClick?: boolean;
-	Selected?: () => void;
-	Deselected?: () => void;
-	StateChanged?: (state: IconState) => void;
-	OnClick?: () => void;
-	OnRightClick?: () => void;
+export interface IconProps extends React.PropsWithChildren {
+	backgroundTransparency?: StateDependent<number>;
+	backgroundColor?: StateDependent<Color3>;
+	imageId?: StateDependent<string>;
+	imageColor?: StateDependent<Color3>;
+	textColor?: StateDependent<Color3>;
+	imageTransparency?: StateDependent<number>;
+	layoutOrder?: StateDependent<number>;
+	text?: StateDependent<string>;
+	textSize?: StateDependent<number>;
+	imageSizeOffset?: StateDependent<number>;
+	defaultState?: IconState;
+	fontFace?: StateDependent<Font>;
+	forcedState?: IconState;
+	leftClickSound?: StateDependent<string>;
+	rightClickSound?: StateDependent<string>;
+	cornerRadius?: StateDependent<UDim>;
+	toggleStateOnClick?: boolean;
+	selected?: () => void;
+	deselected?: () => void;
+	stateChanged?: (state: IconState) => void;
+	onClick?: () => void;
+	onRightClick?: () => void;
+	playSound?: (id: string) => void;
 }
 
-export type IconState = "Selected" | "Deselected";
+type ValidKeys = ExtractKeys<Required<IconProps>, StateDependent<MotionGoal>>;
+
+const ANIMATEABLE = [
+	"backgroundColor",
+	"backgroundTransparency",
+	"imageColor",
+	"imageTransparency",
+] as const;
+
+export type IconState = "selected" | "deselected";
 export type StateDependent<T> = Partial<Record<IconState, T>> | T;
+export type FromStateDependent<T> = T extends StateDependent<infer U> ? U : T;
 export type IconId = number;
 
-export function Icon({
-	ImageId,
-	ImageColor,
-	TextColor,
-	ImageTransparency,
-	Selected,
-	Deselected,
-	StateChanged,
-	OnClick,
-	OnRightClick,
-	BackgroundTransparency,
-	BackgroundColor,
-	DefaultState,
-	LayoutOrder,
-	Text,
-	Sound,
-	ToggleStateOnClick = true,
-	State,
-	children,
-}: IconProps) {
-	const style = useTopbarStyle();
+export function Icon({ children, ...componentProps }: IconProps) {
 	const inset = useGuiInset();
 	const location = useLocation();
 	const id = useId();
-	const [currentState, setState] = useState<IconState>(State ?? "Deselected");
-	const [dropdownSize, setDropdownSize] = useState(new Vector2(0, 0));
+
+	const [currentState, setState] = useState<IconState>(
+		componentProps.forcedState ?? "deselected",
+	);
+
+	const [dropdownAnimating, setAnimationState] = useState(false);
+	const [contentSize, setContentSize] = useState(new Vector2(0, 0));
+	const [dropdownSize, setDropdownSize] = useBinding(new Vector2(0, 0));
+
 	const [textBounds, setTextBounds] = useState(Vector2.zero);
-	const stylesheet = useStylesheet()[style];
+	const stylesheet = useStylesheet();
 
-	assert(location.Type !== "Icon", "Icons cannot be nested");
+	assert(location.type !== "icon", "Icons cannot be nested");
 
-	const propsGoal = {
-		BackgroundTransparency: resolveStateDependent(
-			BackgroundTransparency ?? stylesheet.Icon.BackgroundTransparency,
-			currentState,
-		),
-		BackgroundColor3: resolveStateDependent(
-			BackgroundColor ?? stylesheet.Icon.BackgroundColor3,
-			currentState,
-		),
-	};
+	const animatedProps = useAnimateableProps(
+		currentState,
+		{ ...stylesheet.icon, ...componentProps } as Required<
+			Pick<IconProps, ValidKeys>
+		>,
+		...ANIMATEABLE,
+	);
 
 	const props = {
-		...propsGoal,
-		...useAnimateableProps(propsGoal),
+		...stylesheet.icon,
+		...componentProps,
+		...animatedProps,
 	};
 
 	useMountEffect(() => {
-		DefaultState && !State && setState(DefaultState);
+		props.defaultState &&
+			!componentProps.forcedState &&
+			setState(props.defaultState);
 	});
 
 	useEffect(() => {
-		if (!State) return;
-		setState(State);
-	}, [State]);
+		if (!componentProps.forcedState) return;
+		setState(componentProps.forcedState);
+	}, [componentProps.forcedState]);
 
 	useUpdateEffect(() => {
-		StateChanged?.(currentState);
-		if (currentState === "Selected") {
-			location.IconSelected(id);
-			Selected?.();
+		props.stateChanged(currentState);
+		if (currentState === "selected") {
+			location.iconSelected(id);
+			props.selected();
 		} else {
-			location.IconDeselected(id);
-			Deselected?.();
+			location.iconDeselected(id);
+			props.deselected();
 		}
 	}, [currentState]);
 
 	useUpdateEffect(() => {
-		if (currentState === "Selected" && !location.SelectedIcons.includes(id)) {
-			setState("Deselected");
+		if (currentState === "selected" && !location.selectedIcons.includes(id)) {
+			setState("deselected");
 		}
-	}, [location.SelectedIcons]);
+	}, [location.selectedIcons]);
 
-	const currentImage = resolveStateDependent(ImageId, currentState);
-	const currentText = resolveStateDependent(Text, currentState);
+	const currentImage = stateful(props.imageId, currentState);
+	const currentText = stateful(props.text, currentState);
+	const previousQueryRef = useRef<{ Font: Font; Size: number; Text: string }>();
 
 	useAsyncEffect(async () => {
+		const currentQuery = {
+			Font: stateful(props.fontFace, currentState),
+			Size: stateful(props.textSize, currentState),
+			Text: currentText,
+		};
+		if (deepEquals(currentQuery, previousQueryRef.current ?? {})) return;
 		if (!currentText) return setTextBounds(Vector2.zero);
 
 		const params = new Instance("GetTextBoundsParams");
 		params.Text = currentText;
-		params.Font = stylesheet.Icon.FontFace;
-		params.Size = stylesheet.Icon.TextSize;
+		params.Font = stateful(props.fontFace, currentState);
+		params.Size = stateful(props.textSize, currentState);
 		params.Width = 99999;
 
 		setTextBounds(TextService.GetTextBoundsAsync(params));
-	}, [currentText, stylesheet]);
+		previousQueryRef.current = currentQuery;
+	}, [currentText, props.fontFace, props.textSize, currentState]);
 
-	const ICON_DIFF_Y = style === "New" ? 12 : 4;
-	const FORCE_HEIGHT =
-		location.Type === "Dropdown" ? stylesheet.Dropdown.ForceHeight : undefined;
-	const ICON_HEIGHT = FORCE_HEIGHT ?? inset.Height - ICON_DIFF_Y;
-	const PADDING = style === "New" ? 6 : 3;
-	const IMAGE_SIZE_OFF = stylesheet.Icon.ImageSizeOffset;
-	const IMAGE_SIZE = ICON_HEIGHT - PADDING * 2 + IMAGE_SIZE_OFF;
+	const imageSizeOff = stateful(props.imageSizeOffset, currentState);
+	const forceHeight =
+		location.type === "dropdown" ? stylesheet.dropdown.forceHeight : undefined;
+	const iconHeight = forceHeight ?? inset.Height - 12;
+	const imageSize = iconHeight - 6 * 2 + imageSizeOff;
 
-	const MIN_TL_WIDTH =
-		location.Type === "Dropdown" ? 0 : inset.Height - PADDING * 2;
-	const ACCUMULATED_TL_WIDTH = currentImage
+	const minLabelWidth = location.type === "dropdown" ? 0 : inset.Height - 6 * 2;
+	const accumulatedLabelWidth = currentImage
 		? textBounds.X
-		: math.max(textBounds.X, MIN_TL_WIDTH);
+		: math.max(textBounds.X, minLabelWidth);
 
-	const ICON_SIZE = new Vector2(
+	const iconSize = new Vector2(
 		math.max(
-			ICON_HEIGHT,
+			iconHeight,
 			textBounds.X +
-				PADDING * 2 +
-				(currentImage && textBounds.X !== 0 ? IMAGE_SIZE + PADDING : 0),
+				6 * 2 +
+				(currentImage && textBounds.X !== 0 ? imageSize + 6 : 0),
 		),
-		ICON_HEIGHT,
+		iconHeight,
 	);
-	const IMAGE_POS = PADDING + IMAGE_SIZE_OFF * -0.5;
+	const imagePos = 6 + imageSizeOff * -0.5;
 
 	const textLabelPos = new UDim2(
 		0,
-		currentImage !== undefined ? IMAGE_SIZE + PADDING * 2 : PADDING,
+		currentImage ? imageSize + 6 * 2 : 6,
 		0.5,
 		0,
 	);
 
 	useEffect(() => {
-		if (location.Type !== "Dropdown") return;
-		location.RegisterChild(
+		if (location.type !== "dropdown") return;
+		const includeContents = currentState === "selected" || dropdownAnimating;
+		location.registerChild(
 			id,
-			new Vector2(ICON_SIZE.X, ICON_SIZE.Y).add(
-				new Vector2(0, currentState === "Selected" ? dropdownSize.Y : 0),
+			new Vector2(iconSize.X, iconSize.Y).add(
+				new Vector2(0, includeContents ? contentSize.Y : 0),
 			),
 		);
-	}, [currentState, dropdownSize.Y, ICON_SIZE]);
+	}, [currentState, contentSize.Y, dropdownAnimating, iconSize]);
 
 	useUnmountEffect(() => {
-		if (location.Type !== "Dropdown") return;
-		location.RemoveChild(id);
+		if (location.type !== "dropdown") return;
+		location.removeChild(id);
 	});
 
-	const wrapSize = new Vector2(
-		location.Type === "Dropdown" ? location.DesiredIconWidth : ICON_SIZE.X,
-		ICON_SIZE.Y + dropdownSize.Y,
+	const wrapSize = mapBinding(dropdownSize, (t) =>
+		UDim2.fromOffset(
+			location.type === "dropdown" ? location.desiredIconWidth : iconSize.X,
+			iconSize.Y + t.Y,
+		),
 	);
 
 	return (
 		<LocationContext.Provider
 			value={{
-				Type: "Icon",
-				IsVisible: currentState === "Selected",
-				IsUnderDropdown: location.Type === "Dropdown",
-				Width:
-					location.Type === "Dropdown"
-						? location.DesiredIconWidth
-						: ICON_SIZE.X,
-				SetDropdownSize: setDropdownSize,
+				type: "icon",
+				isVisible: currentState === "selected",
+				isUnderDropdown: location.type === "dropdown",
+				width:
+					location.type === "dropdown" ? location.desiredIconWidth : iconSize.X,
+				setDropdownSize,
+				setContentSize,
+				setAnimationState,
 			}}
 		>
 			<frame
-				Size={mapBinding(wrapSize, (t) => UDim2.fromOffset(t.X, t.Y))}
-				LayoutOrder={resolveStateDependent(LayoutOrder, currentState)}
+				Size={wrapSize}
+				LayoutOrder={stateful(props.layoutOrder, currentState)}
 				BackgroundTransparency={1}
 				key={"IconWrapper"}
 			>
 				<textbutton
-					{...props}
-					Size={new UDim2(1, 0, 0, ICON_SIZE.Y)}
+					Size={new UDim2(1, 0, 0, iconSize.Y)}
 					Event={{
 						MouseButton1Click: () => {
-							if (ToggleStateOnClick) {
+							if (stateful(props.toggleStateOnClick, currentState)) {
 								setState(
-									currentState === "Deselected" ? "Selected" : "Deselected",
+									currentState === "deselected" ? "selected" : "deselected",
 								);
 							}
-							OnClick?.();
+							props.onClick();
 
-							const soundId = Sound ?? stylesheet.Icon.Sound;
+							const soundId = stateful(props.leftClickSound, currentState);
 							if (!soundId) return;
-
-							stylesheet.Icon.PlaySound(soundId);
+							props.playSound(soundId);
 						},
 						MouseButton2Click: () => {
-							if (!OnRightClick) return;
-							OnRightClick();
+							if (props.onRightClick === Noop) return;
+							props.onRightClick();
 
-							const soundId = Sound ?? stylesheet.Icon.Sound;
+							const soundId = stateful(props.rightClickSound, currentState);
 							if (!soundId) return;
-
-							stylesheet.Icon.PlaySound(soundId);
+							props.playSound(soundId);
 						},
 					}}
 					Text={""}
+					BackgroundTransparency={props.backgroundTransparency}
+					BackgroundColor3={stateful(props.backgroundColor, currentState)}
 					key={"IconButton"}
 				>
 					{children}
-					{currentImage !== undefined && (
+					{currentImage !== undefined && currentImage !== "" && (
 						<imagelabel
 							key={"IconImage"}
-							Size={UDim2.fromOffset(IMAGE_SIZE, IMAGE_SIZE)}
-							Position={UDim2.fromOffset(IMAGE_POS, IMAGE_POS)}
+							Size={UDim2.fromOffset(imageSize, imageSize)}
+							Position={UDim2.fromOffset(imagePos, imagePos)}
 							Image={currentImage}
 							BackgroundTransparency={1}
-							ImageColor3={resolveStateDependent(
-								ImageColor ?? stylesheet.Icon.ImageColor3,
-								currentState,
-							)}
-							ImageTransparency={resolveStateDependent(
-								ImageTransparency,
-								currentState,
-							)}
+							ImageColor3={props.imageColor}
+							ImageTransparency={props.imageTransparency}
 						/>
 					)}
 					{currentText !== undefined && currentText !== "" && (
 						<textlabel
-							FontFace={stylesheet.Icon.FontFace}
-							TextSize={stylesheet.Icon.TextSize}
-							TextColor3={resolveStateDependent(
-								TextColor ?? stylesheet.Icon.TextColor3,
-								currentState,
-							)}
+							FontFace={stateful(props.fontFace, currentState)}
+							TextSize={stateful(props.textSize, currentState)}
+							TextColor3={stateful(props.textColor, currentState)}
 							TextWrapped={false}
 							AnchorPoint={new Vector2(0, 0.5)}
-							Size={new UDim2(0, ACCUMULATED_TL_WIDTH, 0.8, 0)}
+							Size={new UDim2(0, accumulatedLabelWidth, 0.8, 0)}
 							Position={textLabelPos}
 							BackgroundTransparency={1}
 							Text={currentText}
@@ -265,9 +268,9 @@ export function Icon({
 					<uicorner
 						key={"UICorner"}
 						CornerRadius={
-							location.Type === "Dropdown"
-								? stylesheet.Dropdown.IconCornerRadius
-								: stylesheet.Icon.CornerRadius
+							location.type === "dropdown"
+								? stylesheet.dropdown.iconCornerRadius
+								: stateful(props.cornerRadius, currentState)
 						}
 					/>
 				</textbutton>

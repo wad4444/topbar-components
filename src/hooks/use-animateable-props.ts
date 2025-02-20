@@ -1,38 +1,51 @@
+import Object from "@rbxts/object-utils";
 import { useMotion, usePrevious } from "@rbxts/pretty-react-hooks";
-import React, { useEffect } from "@rbxts/react";
+import { Binding, useEffect } from "@rbxts/react";
+import { Motion, MotionGoal } from "@rbxts/ripple";
+import {
+	FromStateDependent,
+	IconProps,
+	IconState,
+	StateDependent,
+} from "../components/icon";
+import { stateful } from "../utilities/resolve-state-dependent";
 import { springs } from "../utilities/springs";
 
-interface AnimateableProps {
-	BackgroundColor3: Color3;
-	BackgroundTransparency: number;
-}
-type Result = {
-	[P in keyof AnimateableProps]: React.Binding<AnimateableProps[P]>;
-};
+type Result<
+	T extends Record<string, StateDependent<MotionGoal>>,
+	K extends keyof T,
+> = ExcludeMembers<
+	{
+		[P in keyof T]: P extends K
+			? Binding<NonNullable<FromStateDependent<T[P]>>>
+			: undefined;
+	},
+	undefined
+>;
 
-export function useAnimateableProps(props: AnimateableProps): Result {
+export function useAnimateableProps<
+	T extends Record<string, StateDependent<MotionGoal>>,
+	K extends keyof T,
+>(state: IconState, props: T, ...keys: K[]) {
 	const previousProps = usePrevious(props);
-	const [color, colorMotion] = useMotion(props.BackgroundColor3);
-	const [transparency, transparencyMotion] = useMotion(
-		props.BackgroundTransparency,
-	);
+	const motions: [Binding<MotionGoal>, Motion<MotionGoal>][] = [];
+
+	for (const key of keys) {
+		const [binding, motion] = useMotion(stateful(props[key], state));
+		motions.push([binding, motion]);
+	}
 
 	useEffect(() => {
-		if (
-			props.BackgroundTransparency !== previousProps?.BackgroundTransparency
-		) {
-			transparencyMotion.spring(
-				props.BackgroundTransparency,
-				springs.responsive,
-			);
-		}
-		if (props.BackgroundColor3 !== previousProps?.BackgroundColor3) {
-			colorMotion.spring(props.BackgroundColor3, springs.responsive);
+		for (const key of keys) {
+			const value = stateful(props[key], state);
+			const previousValue = stateful(previousProps, state);
+			if (value === previousValue) continue;
+
+			motions[keys.indexOf(key)][1].spring(value, springs.responsive);
 		}
 	}, [props]);
 
-	return {
-		BackgroundColor3: color,
-		BackgroundTransparency: transparency,
-	};
+	return Object.fromEntries(
+		keys.map((key) => [key, motions[keys.indexOf(key)][0]]),
+	) as Result<T, K>;
 }
