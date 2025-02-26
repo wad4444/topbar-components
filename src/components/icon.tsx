@@ -13,7 +13,7 @@ import { LocationContext, useLocation, useStylesheet } from "../context";
 import { useAnimateableProps } from "../hooks/use-animateable-props";
 import { useGuiInset } from "../hooks/use-gui-inset";
 import { useId } from "../hooks/use-id";
-import { Noop } from "../style";
+import { noop } from "../style";
 import { stateful } from "../utilities/resolve-state-dependent";
 
 export interface IconProps extends React.PropsWithChildren {
@@ -33,6 +33,11 @@ export interface IconProps extends React.PropsWithChildren {
 	leftClickSound?: StateDependent<string>;
 	rightClickSound?: StateDependent<string>;
 	cornerRadius?: StateDependent<UDim>;
+	strokeTransparency?: StateDependent<number>;
+	strokeColor?: StateDependent<Color3>;
+	strokeThickness?: StateDependent<number>;
+	textAlignment?: StateDependent<Enum.TextXAlignment>;
+	richText?: StateDependent<boolean>;
 	toggleStateOnClick?: boolean;
 	selected?: () => void;
 	deselected?: () => void;
@@ -49,10 +54,13 @@ const ANIMATEABLE = [
 	"backgroundTransparency",
 	"imageColor",
 	"imageTransparency",
+	"strokeTransparency",
+	"strokeThickness",
+	"strokeColor",
 ] as const;
 
 export type IconState = "selected" | "deselected";
-export type StateDependent<T> = Partial<Record<IconState, T>> | T;
+export type StateDependent<T> = Record<IconState, T> | T;
 export type FromStateDependent<T> = T extends StateDependent<infer U> ? U : T;
 export type IconId = number;
 
@@ -145,7 +153,10 @@ export function Icon({ children, ...componentProps }: IconProps) {
 	const iconHeight = forceHeight ?? inset.Height - 12;
 	const imageSize = iconHeight - 6 * 2 + imageSizeOff;
 
-	const minLabelWidth = location.type === "dropdown" ? 0 : inset.Height - 6 * 2;
+	const minLabelWidth =
+		location.type === "dropdown"
+			? location.desiredIconWidth
+			: inset.Height - 6 * 2;
 	const accumulatedLabelWidth = currentImage
 		? textBounds.X
 		: math.max(textBounds.X, minLabelWidth);
@@ -226,7 +237,7 @@ export function Icon({ children, ...componentProps }: IconProps) {
 							props.playSound(soundId);
 						},
 						MouseButton2Click: () => {
-							if (props.onRightClick === Noop) return;
+							if (props.onRightClick === noop) return;
 							props.onRightClick();
 
 							const soundId = stateful(props.rightClickSound, currentState);
@@ -260,10 +271,19 @@ export function Icon({ children, ...componentProps }: IconProps) {
 							AnchorPoint={new Vector2(0, 0.5)}
 							Size={new UDim2(0, accumulatedLabelWidth, 0.8, 0)}
 							Position={textLabelPos}
+							TextXAlignment={stateful(props.textAlignment, currentState)}
+							RichText={stateful(props.richText, currentState)}
 							BackgroundTransparency={1}
 							Text={currentText}
 							key={"IconText"}
-						/>
+						>
+							<uistroke
+								key={"UIStroke"}
+								Thickness={stateful(props.strokeThickness, currentState)}
+								Color={stateful(props.strokeColor, currentState)}
+								Transparency={stateful(props.strokeTransparency, currentState)}
+							/>
+						</textlabel>
 					)}
 					<uicorner
 						key={"UICorner"}

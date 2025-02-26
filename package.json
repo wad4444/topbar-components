@@ -12,12 +12,7 @@
 	"license": "MIT",
 	"description": "@rbxts/react component package mimicking topbar-plus",
 	"types": "out/index.d.ts",
-	"files": [
-		"out",
-		"README.md",
-		"LICENSE.txt",
-		"!**/*.tsbuildinfo"
-	],
+	"files": ["out", "README.md", "LICENSE.txt", "!**/*.tsbuildinfo"],
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/wad4444/topbar-components.git"

@@ -6,8 +6,8 @@ export function useGuiInset() {
 	const [inset, setInset] = useState(GuiService.TopbarInset);
 
 	useMountEffect(() => {
-		setInset(GuiService.TopbarInset)
-	})
+		setInset(GuiService.TopbarInset);
+	});
 
 	useEventListener(GuiService.GetPropertyChangedSignal("TopbarInset"), () =>
 		setInset(GuiService.TopbarInset),

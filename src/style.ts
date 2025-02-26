@@ -1,9 +1,9 @@
 import { Manager } from "@rbxts/melody";
 import { SoundService } from "@rbxts/services";
-import { IconProps } from "./components/icon";
 import { DropdownProps } from "./components/dropdown";
+import { IconProps } from "./components/icon";
 
-function DefaultPlaySound(id: string) {
+function defaultPlaySound(id: string) {
 	const sound = Manager.buildSoundCreator(id)({
 		Parent: SoundService,
 	});
@@ -11,7 +11,7 @@ function DefaultPlaySound(id: string) {
 	sound.Ended.Once(() => sound.Destroy());
 }
 
-export function Noop() {}
+export function noop() {}
 
 export interface Stylesheet {
 	icon: Required<IconProps>;
@@ -25,6 +25,10 @@ export const DefaultStylesheet: Stylesheet = {
 			Enum.FontWeight.Medium,
 			Enum.FontStyle.Normal,
 		),
+		strokeColor: Color3.fromRGB(0, 0, 0),
+		strokeThickness: 0,
+		strokeTransparency: 0,
+		textAlignment: Enum.TextXAlignment.Left,
 		cornerRadius: new UDim(1, 0),
 		textColor: {
 			deselected: Color3.fromRGB(255, 255, 255),
@@ -39,11 +43,12 @@ export const DefaultStylesheet: Stylesheet = {
 			deselected: Color3.fromRGB(255, 255, 255),
 			selected: Color3.fromRGB(57, 60, 65),
 		},
+		richText: false,
 		textSize: 20,
 		imageSizeOffset: -4,
 		leftClickSound: "",
 		rightClickSound: "",
-		playSound: DefaultPlaySound,
+		playSound: defaultPlaySound,
 		imageId: "",
 		imageTransparency: 0,
 		layoutOrder: 0,
@@ -51,11 +56,11 @@ export const DefaultStylesheet: Stylesheet = {
 		defaultState: "deselected",
 		forcedState: "deselected",
 		toggleStateOnClick: true,
-		selected: Noop,
-		deselected: Noop,
-		stateChanged: Noop,
-		onClick: Noop,
-		onRightClick: Noop,
+		selected: noop,
+		deselected: noop,
+		stateChanged: noop,
+		onClick: noop,
+		onRightClick: noop,
 		children: [],
 	},
 	dropdown: {
@@ -67,5 +72,5 @@ export const DefaultStylesheet: Stylesheet = {
 		iconCornerRadius: new UDim(0, 0),
 		selectionMode: "Multiple",
 		children: [],
-	}
+	},
 };
