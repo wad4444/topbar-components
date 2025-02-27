@@ -12,7 +12,7 @@ type PartialStylesheet = DeepPartial<StylesheetType>;
 export function Stylesheet({ stylesheet, children }: Props) {
 	return (
 		<StylesheetContext.Provider
-			value={reconcile(DefaultStylesheet, stylesheet) as StylesheetType}
+			value={reconcile(stylesheet, DefaultStylesheet) as StylesheetType}
 		>
 			{children}
 		</StylesheetContext.Provider>

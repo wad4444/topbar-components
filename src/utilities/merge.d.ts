@@ -1,2 +1,2 @@
-declare function reconcile(base: object, target: object): object;
+declare function reconcile(target: object, template: object): object;
 export = reconcile;
