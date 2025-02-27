@@ -155,7 +155,7 @@ export function Icon({ children, ...componentProps }: IconProps) {
 
 	const minLabelWidth =
 		location.type === "dropdown"
-			? location.desiredIconWidth
+			? location.desiredIconWidth - 12
 			: inset.Height - 6 * 2;
 	const accumulatedLabelWidth = currentImage
 		? textBounds.X
