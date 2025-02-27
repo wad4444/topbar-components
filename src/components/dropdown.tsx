@@ -15,6 +15,9 @@ export interface DropdownProps extends React.PropsWithChildren {
 	padding?: UDim;
 	forceHeight?: number;
 	iconCornerRadius?: UDim;
+	scrollBarThickness?: number;
+	scrollBarTransparency?: number;
+	scrollBarImageColor?: Color3;
 	selectionMode?: SelectionMode;
 }
 
@@ -32,7 +35,6 @@ export function Dropdown(componentProps: DropdownProps) {
 	const maxWidth = isNested ? location.width : props.maxWidth;
 	const minWidth = isNested ? location.width : props.minWidth;
 	const maxHeight = props.maxHeight;
-	const scrollWidth = 5;
 
 	const contentSize = useMemo(() => {
 		let y = 0;
@@ -94,19 +96,22 @@ export function Dropdown(componentProps: DropdownProps) {
 				ClipsDescendants={true}
 				Size={mapBinding(transition, (t) =>
 					UDim2.fromOffset(
-						contentSize.X + (scrollingEnabled ? scrollWidth : 0),
+						contentSize.X + (scrollingEnabled ? props.scrollBarThickness : 0),
 						t * math.min(contentSize.Y, isNested ? contentSize.Y : maxHeight),
 					),
 				)}
 				BorderSizePixel={0}
 				Position={UDim2.fromScale(0, 1)}
+				ScrollBarImageColor3={props.scrollBarImageColor}
 				ScrollBarImageTransparency={
-					scrollingEnabled && location.isVisible ? 0 : 1
+					scrollingEnabled && location.isVisible
+						? props.scrollBarTransparency
+						: 1
 				}
 				ScrollingEnabled={scrollingEnabled}
 				AutomaticCanvasSize={Enum.AutomaticSize.None}
 				CanvasSize={UDim2.fromOffset(0, contentSize.Y)}
-				ScrollBarThickness={scrollingEnabled ? scrollWidth : 0}
+				ScrollBarThickness={scrollingEnabled ? props.scrollBarThickness : 0}
 				BackgroundTransparency={1}
 				Change={{
 					AbsoluteSize: (rbx) => location.setDropdownSize(rbx.AbsoluteSize),
@@ -114,7 +119,9 @@ export function Dropdown(componentProps: DropdownProps) {
 				key={"Dropdown"}
 			>
 				{props.children}
-				{isNested && <uipadding key={"UIPadding"} PaddingTop={stylesheet.padding} />}
+				{isNested && (
+					<uipadding key={"UIPadding"} PaddingTop={stylesheet.padding} />
+				)}
 				<uilistlayout
 					key={"UIListLayout"}
 					SortOrder={Enum.SortOrder.LayoutOrder}
