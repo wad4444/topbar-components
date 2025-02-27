@@ -54,9 +54,6 @@ const ANIMATEABLE = [
 	"backgroundTransparency",
 	"imageColor",
 	"imageTransparency",
-	"strokeTransparency",
-	"strokeThickness",
-	"strokeColor",
 ] as const;
 
 export type IconState = "selected" | "deselected";
