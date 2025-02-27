@@ -114,7 +114,7 @@ export function Dropdown(componentProps: DropdownProps) {
 				key={"Dropdown"}
 			>
 				{props.children}
-				{isNested && <uipadding PaddingTop={stylesheet.padding} />}
+				{isNested && <uipadding key={"UIPadding"} PaddingTop={stylesheet.padding} />}
 				<uilistlayout
 					key={"UIListLayout"}
 					SortOrder={Enum.SortOrder.LayoutOrder}
