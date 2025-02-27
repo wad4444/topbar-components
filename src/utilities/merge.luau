@@ -22,6 +22,8 @@ local function reconcileTable(target, template)
             end
         end
     end
+
+    return target
 end
 
 return reconcileTable
