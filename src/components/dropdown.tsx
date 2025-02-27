@@ -17,6 +17,9 @@ export interface DropdownProps extends React.PropsWithChildren {
 	iconCornerRadius?: UDim;
 	scrollBarThickness?: number;
 	scrollBarTransparency?: number;
+	topImage?: string;
+	bottomImage?: string;
+	midImage?: string;
 	scrollBarImageColor?: Color3;
 	selectionMode?: SelectionMode;
 }
@@ -116,6 +119,9 @@ export function Dropdown(componentProps: DropdownProps) {
 				Change={{
 					AbsoluteSize: (rbx) => location.setDropdownSize(rbx.AbsoluteSize),
 				}}
+				MidImage={props.midImage}
+				TopImage={props.topImage}
+				BottomImage={props.bottomImage}
 				key={"Dropdown"}
 			>
 				{props.children}

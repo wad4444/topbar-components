@@ -72,5 +72,11 @@ export const DefaultStylesheet: Stylesheet = {
 		iconCornerRadius: new UDim(0, 0),
 		selectionMode: "Multiple",
 		children: [],
+		scrollBarThickness: 5,
+		scrollBarTransparency: 0,
+		scrollBarImageColor: new Color3(1, 1, 1),
+		midImage: "rbxasset://textures/ui/Scroll/scroll-middle.png",
+		topImage: "rbxasset://textures/ui/Scroll/scroll-top.png",
+		bottomImage: "rbxasset://textures/ui/Scroll/scroll-bottom.png",
 	},
 };
