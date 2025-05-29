@@ -61,6 +61,8 @@ export const DefaultStylesheet: Stylesheet = {
 		stateChanged: noop,
 		onClick: noop,
 		onRightClick: noop,
+		hover: noop,
+		unhover: noop,
 		children: [],
 	},
 	dropdown: {

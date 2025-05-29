@@ -41,6 +41,8 @@ export interface IconProps extends React.PropsWithChildren {
 	toggleStateOnClick?: boolean;
 	selected?: () => void;
 	deselected?: () => void;
+	hover?: () => void;
+	unhover?: () => void;
 	stateChanged?: (state: IconState) => void;
 	onClick?: () => void;
 	onRightClick?: () => void;
@@ -241,6 +243,8 @@ export function Icon({ children, ...componentProps }: IconProps) {
 							if (!soundId) return;
 							props.playSound(soundId);
 						},
+						MouseEnter: props.hover,
+						MouseLeave: props.unhover,
 					}}
 					Text={""}
 					BackgroundTransparency={props.backgroundTransparency}
