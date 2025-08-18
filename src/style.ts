@@ -1,12 +1,12 @@
-import { Manager } from "@rbxts/melody";
 import { SoundService } from "@rbxts/services";
 import { DropdownProps } from "./components/dropdown";
 import { IconProps } from "./components/icon";
 
 function defaultPlaySound(id: string) {
-	const sound = Manager.buildSoundCreator(id)({
-		Parent: SoundService,
-	});
+	const sound = new Instance("Sound");
+	sound.SoundId = id;
+	sound.Parent = SoundService;
+
 	sound.Play();
 	sound.Ended.Once(() => sound.Destroy());
 }
