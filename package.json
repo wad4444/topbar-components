@@ -35,6 +35,6 @@
 		"@rbxts/t": "^3.1.1"
 	},
 	"peerDependencies": {
-		"@rbxts/react": "^17.2.2"
+		"@rbxts/react": "*"
 	}
 }
