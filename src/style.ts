@@ -46,6 +46,8 @@ export const DefaultStylesheet: Stylesheet = {
 		richText: false,
 		textSize: 20,
 		imageSizeOffset: -4,
+		imageRectOffset: Vector2.zero,
+		imageRectSize: Vector2.zero,
 		leftClickSound: "",
 		rightClickSound: "",
 		playSound: defaultPlaySound,
