@@ -27,6 +27,8 @@ export interface IconProps extends React.PropsWithChildren {
 	text?: StateDependent<string>;
 	textSize?: StateDependent<number>;
 	imageSizeOffset?: StateDependent<number>;
+	imageRectOffset?: StateDependent<Vector2>;
+	imageRectSize?: StateDependent<Vector2>;
 	defaultState?: IconState;
 	fontFace?: StateDependent<Font>;
 	forcedState?: IconState;
@@ -261,6 +263,8 @@ export function Icon({ children, ...componentProps }: IconProps) {
 							BackgroundTransparency={1}
 							ImageColor3={props.imageColor}
 							ImageTransparency={props.imageTransparency}
+							ImageRectOffset={stateful(props.imageRectOffset, currentState)}
+							ImageRectSize={stateful(props.imageRectSize, currentState)}
 						/>
 					)}
 					{currentText !== undefined && currentText !== "" && (
